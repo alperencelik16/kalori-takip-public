@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MacroAthletic — Atletik Fizik & Kalori Takibi</title>
+  <style>
+    :root {
+      --bg: #070d19;
+      --card: #0e1729;
+      --card-2: #142038;
+      --border: #1e2d4a;
+      --text: #f1f5f9;
+      --muted: #8fa3bf;
+      --accent: #10b981;
+      --accent-dark: #064e3b;
+      --accent-glow: rgba(16, 185, 129, 0.22);
+      --blue: #38bdf8;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 14px;
+      line-height: 1.45;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    /* Header */
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #04130d;
+      flex-shrink: 0;
+    }
+
+    .title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .title-line h1 { font-size: 1.15rem; font-weight: 800; }
+
+    .cut-badge {
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.4px;
+    }
+
+    .subtitle { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+    .stat-pill-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot-green { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+    /* Date bar */
+    .date-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .icon-btn:hover { background: #1a2a49; }
+
+    .date-center { text-align: center; }
+    .date-main { font-weight: 700; font-size: 0.98rem; }
+    .date-sub { font-size: 0.78rem; color: var(--muted); }
+
+    /* Phase bar */
+    .section-kicker {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .phases {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .phase-btn {
+      min-width: 82px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+      color: var(--text);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .phase-btn.active {
+      background: var(--accent);
+      color: #04140e;
+      border-color: var(--accent);
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .phase-name { font-size: 0.78rem; font-weight: 800; }
+    .phase-kcal { font-size: 0.75rem; font-weight: 600; opacity: 0.9; margin-top: 2px; }
+
+    /* Ring */
+    .balance-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .target-pill {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .ring-wrap {
+      display: grid;
+      place-items: center;
+      margin: 18px 0 14px;
+    }
+
+    .ring {
+      width: 176px;
+      height: 176px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--accent) var(--pct, 0%), #18253f 0%);
+      padding: 12px;
+      transition: background 0.25s ease;
+    }
+
+    .ring-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .ring-num { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+    .ring-lbl { font-size: 0.72rem; font-weight: 700; color: var(--muted); letter-spacing: 0.6px; margin-top: 2px; }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mini-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 11px 12px;
+    }
+
+    .mini-label { font-size: 0.76rem; color: var(--muted); }
+    .mini-val { font-size: 1.1rem; font-weight: 800; margin-top: 3px; }
+
+    /* Macros */
+    .macro-item { margin-top: 12px; }
+    .macro-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .prog-bg {
+      height: 8px;
+      background: var(--card-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    /* Creatine & Water */
+    .cw-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .cw-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .check-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+
+    .check-btn.done {
+      background: var(--accent);
+      color: #04140e;
+      border-color: var(--accent);
+    }
+
+    .water-btn {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+
+    .water-btn:hover { background: #0369a1; }
+
+    /* Quick meals */
+    .quick-card {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .meal-name { font-weight: 700; font-size: 0.94rem; }
+    .meal-sub { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+    .meal-macros { font-size: 0.78rem; font-weight: 700; margin-top: 6px; }
+
+    .add-kcal-btn {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 10px;
+      padding: 7px 11px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .add-kcal-btn:hover { background: rgba(16, 185, 129, 0.26); }
+
+    .dashed-btn {
+      width: 100%;
+      margin-top: 10px;
+      border: 1px dashed #2e436b;
+      background: rgba(20, 32, 56, 0.5);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #04140e;
+      border: none;
+      border-radius: 11px;
+      padding: 9px 13px;
+      font-weight: 800;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover { background: #059669; }
+
+    .danger-link {
+      background: transparent;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      color: #fda4af;
+      border-radius: 9px;
+      padding: 5px 9px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Form & Log */
+    .manual-form {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    .manual-form.open { display: grid; }
+    .manual-form .full { grid-column: 1 / -1; }
+
+    input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 0.88rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 22px 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .log-row {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Üst Profil Kartı -->
+    <div class="card">
+      <div class="brand-row">
+        <div class="logo-box">M</div>
+        <div>
+          <div class="title-line">
+            <h1>MacroAthletic</h1>
+            <span class="cut-badge">6-WEEKS CUT</span>
+          </div>
+          <div class="subtitle">Atletik Fizik &amp; Kalori Takibi</div>
+        </div>
+      </div>
+
+      <div class="stat-pill-row">
+        <div class="stat-pill">
+          <span class="dot-green"></span>
+          <span id="profileLabel">183 cm • 96 kg</span>
+        </div>
+        <button class="stat-pill" style="cursor:pointer;" onclick="editProfile()">Kilo Güncelle</button>
+      </div>
+    </div>
+
+    <!-- Tarih Seçici -->
+    <div class="card date-bar">
+      <button class="icon-btn" onclick="changeDay(-1)" title="Önceki gün">&lt;</button>
+      <div class="date-center">
+        <div class="date-main" id="dateMain">22 Kas 2026</div>
+        <div class="date-sub" id="dateSub">Pazar</div>
+      </div>
+      <button class="icon-btn" onclick="changeDay(1)" title="Sonraki gün">&gt;</button>
+    </div>
+
+    <!-- Definisyon Fazı -->
+    <div class="card">
+      <div class="section-kicker">
+        <span>📈 Definisyon Fazı:</span>
+        <span id="activePhaseText">1. Hafta (2600 kcal)</span>
+      </div>
+      <div class="phases" id="phasesBar"></div>
+    </div>
+
+    <!-- Kalori Dengesi -->
+    <div class="card">
+      <div class="balance-head">
+        <span class="section-kicker" style="margin:0;">🟢 KALORİ DENGESİ</span>
+        <span class="target-pill" id="targetPill">Hedef: 2600 kcal</span>
+      </div>
+
+      <div class="ring-wrap">
+        <div class="ring" id="kcalRing" style="--pct: 0%;">
+          <div class="ring-inner">
+            <div class="ring-num" id="remKcal">2600</div>
+            <div class="ring-lbl">KALAN KALORİ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-stats">
+        <div class="mini-box">
+          <div class="mini-label">Alınan Kalori</div>
+          <div class="mini-val" style="color: var(--accent);" id="takenKcal">0 kcal</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">7 Günlük Ort.</div>
+          <div class="mini-val" id="avg7Kcal">0 kcal</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Günlük Makro Hedefleri + Kreatin + Su -->
+    <div class="card">
+      <div class="section-kicker">
+        <span>◔ GÜNLÜK MAKRO HEDEFLERİ</span>
+        <span style="color: var(--accent);">PROTEİN HEDEFİ: 195G (190-210G)</span>
+      </div>
+
+      <div class="macro-item">
+        <div class="macro-top">
+          <span style="color: var(--accent);">Protein</span>
+          <span id="proText">0g / 195g (0%)</span>
+        </div>
+        <div class="prog-bg"><div class="prog-fill" id="proBar" style="background: var(--accent);"></div></div>
+      </div>
+
+      <div class="macro-item">
+        <div class="macro-top">
+          <span style="color: var(--amber);">Karbonhidrat</span>
+          <span id="carbText">0g / 240g (0%)</span>
+        </div>
+        <div class="prog-bg"><div class="prog-fill" id="carbBar" style="background: var(--amber);"></div></div>
+      </div>
+
+      <div class="macro-item">
+        <div class="macro-top">
+          <span style="color: var(--blue);">Sağlıklı Yağ</span>
+          <span id="fatText">0g / 75g (0%)</span>
+        </div>
+        <div class="prog-bg"><div class="prog-fill" id="fatBar" style="background: var(--blue);"></div></div>
+      </div>
+
+      <div class="cw-grid">
+        <div class="cw-box">
+          <div>
+            <div style="font-weight:800; font-size:0.95rem;">5g Kreatin</div>
+            <div class="meal-sub" id="creatineStatus">Henüz Alınmadı</div>
+          </div>
+          <button class="check-btn" id="creatineBtn" onclick="toggleCreatine()">✓</button>
+        </div>
+
+        <div class="cw-box">
+          <div>
+            <div style="font-weight:800; font-size:0.95rem;" id="waterTitle">Su (0.0L)</div>
+            <div class="meal-sub">Hedef: 3.5 Litre</div>
+          </div>
+          <button class="water-btn" onclick="addWater(0.25)">+250ml</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hızlı Yemek Kaydı -->
+    <div class="card">
+      <div class="section-kicker" style="display:block;">
+        <div style="color: var(--text); font-size:0.98rem;">⚡ Hızlı Yemek Kaydı</div>
+        <div class="meal-sub">Sık tükettiğin besinleri tek dokunuşla günlüğe ekle.</div>
+      </div>
+
+      <div id="quickMealsList"></div>
+      <button class="dashed-btn" onclick="addCustomFavorite()">+ Yeni Favori Yemek</button>
+    </div>
+
+    <!-- Günlük Öğün Listesi -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+        <div>
+          <div style="font-weight:800; font-size:1rem;">☰ Günlük Öğün Listesi</div>
+        </div>
+        <button class="primary-btn" onclick="toggleManualForm()">+ Manuel Öğün Ekle</button>
+      </div>
+
+      <form class="manual-form" id="manualForm" onsubmit="submitManualMeal(event)">
+        <input class="full" type="text" id="mName" placeholder="Öğün adı (ör. Tavuk + Pilav)" required />
+        <input type="number" id="mKcal" placeholder="Kalori (kcal)" min="1" required />
+        <input type="number" id="mPro" placeholder="Protein (g)" min="0" step="0.1" />
+        <input type="number" id="mCarb" placeholder="Karb (g)" min="0" step="0.1" />
+        <input type="number" id="mFat" placeholder="Yağ (g)" min="0" step="0.1" />
+        <button type="submit" class="primary-btn full">Listeye Kaydet</button>
+      </form>
+
+      <div id="mealsList"></div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'macroathletic_v1';
+    const PHASES = [
+      { week: 1, label: '1.Hafta', kcal: 2600 },
+      { week: 2, label: '2.Hafta', kcal: 2500 },
+      { week: 3, label: '3.Hafta', kcal: 2400 },
+      { week: 4, label: '4.Hafta', kcal: 2300 },
+      { week: 5, label: '5.Hafta', kcal: 2150 },
+      { week: 6, label: '6.Hafta', kcal: 2000 }
+    ];
+
+    const DEFAULT_FAVORITES = [
+      { id: 'kumru', name: 'Kumru', portion: '1 Tam Porsiyon', kcal: 680, p: 34, c: 65, f: 30 },
+      { id: 'patso', name: 'Patso', portion: '1 Tam Porsiyon', kcal: 740, p: 22, c: 88, f: 33 },
+      { id: 'galeta', name: 'Galeta', portion: '3 Adet', kcal: 150, p: 4, c: 24, f: 4 },
+      { id: 'whey', name: 'Whey Protein', portion: '1 Ölçek', kcal: 120, p: 24, c: 3, f: 2 },
+      { id: 'tavuk', name: 'Tavuk Göğsü', portion: '200g (Pişmiş)', kcal: 330, p: 62, c: 0, f: 7 },
+      { id: 'pilav', name: 'Pirinç Pilavı', portion: '200g (Pişmiş)', kcal: 260, p: 5, c: 56, f: 2 },
+      { id: 'yumurta', name: 'Haşlanmış Yumurta', portion: '3 Adet (L Boy)', kcal: 230, p: 19, c: 2, f: 16 },
+      { id: 'kahve', name: 'Sade Kahve / Americano', portion: '1 Fincan', kcal: 5, p: 0, c: 1, f: 0 }
+    ];
+
+    let state = loadState();
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {
+        height: 183,
+        weight: 96,
+        activeWeek: 1,
+        favorites: DEFAULT_FAVORITES,
+        days: {}
+      };
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+      render();
+    }
+
+    function dateKey(d) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    function getDayData(key) {
+      if (!state.days[key]) {
+        state.days[key] = { meals: [], creatine: false, water: 0 };
+      }
+      return state.days[key];
+    }
+
+    function changeDay(offset) {
+      currentDate.setDate(currentDate.getDate() + offset);
+      render();
+    }
+
+    function selectWeek(week) {
+      state.activeWeek = week;
+      saveState();
+    }
+
+    function editProfile() {
+      const w = prompt('Güncel kilonu gir (kg):', state.weight);
+      if (w && !isNaN(Number(w)) && Number(w) > 30) {
+        state.weight = Number(w);
+        saveState();
+      }
+    }
+
+    function addFavoriteMeal(favId) {
+      const fav = state.favorites.find(x => x.id === favId);
+      if (!fav) return;
+      const key = dateKey(currentDate);
+      const day = getDayData(key);
+      day.meals.unshift({
+        id: Date.now() + Math.random(),
+        name: `${fav.name} (${fav.portion})`,
+        kcal: fav.kcal,
+        p: fav.p,
+        c: fav.c,
+        f: fav.f
+      });
+      saveState();
+    }
+
+    function addCustomFavorite() {
+      const name = prompt('Favori besin adı:');
+      if (!name) return;
+      const kcal = Number(prompt('Kalori (kcal):', '250'));
+      if (!kcal || isNaN(kcal)) return;
+      const p = Number(prompt('Protein (g):', '20') || 0);
+      const c = Number(prompt('Karbonhidrat (g):', '25') || 0);
+      const f = Number(prompt('Yağ (g):', '5') || 0);
+      state.favorites.push({
+        id: 'fav_' + Date.now(),
+        name: name.trim(),
+        portion: '1 Porsiyon',
+        kcal, p, c, f
+      });
+      saveState();
+    }
+
+    function toggleManualForm() {
+      document.getElementById('manualForm').classList.toggle('open');
+    }
+
+    function submitManualMeal(e) {
+      e.preventDefault();
+      const name = document.getElementById('mName').value.trim();
+      const kcal = Number(document.getElementById('mKcal').value);
+      const p = Number(document.getElementById('mPro').value || 0);
+      const c = Number(document.getElementById('mCarb').value || 0);
+      const f = Number(document.getElementById('mFat').value || 0);
+      if (!name || !kcal) return;
+      const day = getDayData(dateKey(currentDate));
+      day.meals.unshift({ id: Date.now() + Math.random(), name, kcal, p, c, f });
+      e.target.reset();
+      document.getElementById('manualForm').classList.remove('open');
+      saveState();
+    }
+
+    function deleteMeal(mealId) {
+      const day = getDayData(dateKey(currentDate));
+      day.meals = day.meals.filter(m => m.id !== mealId);
+      saveState();
+    }
+
+    function toggleCreatine() {
+      const day = getDayData(dateKey(currentDate));
+      day.creatine = !day.creatine;
+      saveState();
+    }
+
+    function addWater(liters) {
+      const day = getDayData(dateKey(currentDate));
+      day.water = Number(((day.water || 0) + liters).toFixed(2));
+      saveState();
+    }
+
+    function render() {
+      const phase = PHASES.find(p => p.week === state.activeWeek) || PHASES[0];
+      const targetKcal = phase.kcal;
+      const targetPro = 195;
+      const targetCarb = Math.round((targetKcal * 0.37));
+      const targetFat = 75;
+
+      document.getElementById('profileLabel').textContent = `${state.height} cm • ${state.weight} kg`;
+      document.getElementById('dateMain').textContent = currentDate.toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' });
+      document.getElementById('dateSub').textContent = currentDate.toLocaleDateString('tr-TR', { weekday: 'long' });
+      document.getElementById('activePhaseText').textContent = `${phase.label} (${targetKcal} kcal)`;
+      document.getElementById('targetPill').textContent = `Hedef: ${targetKcal} kcal`;
+
+      document.getElementById('phasesBar').innerHTML = PHASES.map(p => `
+        <button class="phase-btn ${p.week === phase.week ? 'active' : ''}" onclick="selectWeek(${p.week})">
+          <div class="phase-name">${p.label}</div>
+          <div class="phase-kcal">${p.kcal}k</div>
+        </button>
+      `).join('');
+
+      const day = getDayData(dateKey(currentDate));
+      const takenKcal = day.meals.reduce((s, m) => s + Number(m.kcal || 0), 0);
+      const takenPro = day.meals.reduce((s, m) => s + Number(m.p || 0), 0);
+      const takenCarb = day.meals.reduce((s, m) => s + Number(m.c || 0), 0);
+      const takenFat = day.meals.reduce((s, m) => s + Number(m.f || 0), 0);
+      const remKcal = targetKcal - takenKcal;
+      const pct = Math.min(100, Math.round((takenKcal / targetKcal) * 100));
+
+      document.getElementById('remKcal').textContent = remKcal;
+      document.getElementById('takenKcal').textContent = `${takenKcal} kcal`;
+      document.getElementById('kcalRing').style.setProperty('--pct', `${pct}%`);
+      document.getElementById('kcalRing').style.background = takenKcal > targetKcal
+        ? `conic-gradient(var(--rose) ${pct}%, #18253f 0%)`
+        : `conic-gradient(var(--accent) ${pct}%, #18253f 0%)`;
+
+      // 7 günlük ortalama
+      let sum7 = 0;
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(currentDate);
+        d.setDate(d.getDate() - i);
+        const dData = state.days[dateKey(d)];
+        if (dData) {
+          sum7 += dData.meals.reduce((s, m) => s + Number(m.kcal || 0), 0);
+        }
+      }
+      document.getElementById('avg7Kcal').textContent = `${Math.round(sum7 / 7)} kcal`;
+
+      // Makrolar
+      const proPct = Math.min(100, Math.round((takenPro / targetPro) * 100));
+      const carbPct = Math.min(100, Math.round((takenCarb / targetCarb) * 100));
+      const fatPct = Math.min(100, Math.round((takenFat / targetFat) * 100));
+
+      document.getElementById('proText').textContent = `${Math.round(takenPro)}g / ${targetPro}g (${proPct}%)`;
+      document.getElementById('carbText').textContent = `${Math.round(takenCarb)}g / ${targetCarb}g (${carbPct}%)`;
+      document.getElementById('fatText').textContent = `${Math.round(takenFat)}g / ${targetFat}g (${fatPct}%)`;
+      document.getElementById('proBar').style.width = `${proPct}%`;
+      document.getElementById('carbBar').style.width = `${carbPct}%`;
+      document.getElementById('fatBar').style.width = `${fatPct}%`;
+
+      // Kreatin & Su
+      const cBtn = document.getElementById('creatineBtn');
+      const cStatus = document.getElementById('creatineStatus');
+      if (day.creatine) {
+        cBtn.classList.add('done');
+        cStatus.textContent = 'Bugün Alındı';
+      } else {
+        cBtn.classList.remove('done');
+        cStatus.textContent = 'Henüz Alınmadı';
+      }
+      document.getElementById('waterTitle').textContent = `Su (${Number(day.water || 0).toFixed(2)}L)`;
+
+      // Hızlı yemekler
+      document.getElementById('quickMealsList').innerHTML = state.favorites.map(f => `
+        <div class="quick-card">
+          <div>
+            <div class="meal-name">${f.name}</div>
+            <div class="meal-sub">${f.portion}</div>
+            <div class="meal-macros">
+              <span style="color:var(--accent);">${f.p}P</span> •
+              <span style="color:var(--amber);">${f.c}K</span> •
+              <span style="color:var(--blue);">${f.f}Y</span>
+            </div>
+          </div>
+          <button class="add-kcal-btn" onclick="addFavoriteMeal('${f.id}')">+${f.kcal} kcal</button>
+        </div>
+      `).join('');
+
+      // Günlük öğün listesi
+      const mList = document.getElementById('mealsList');
+      if (!day.meals.length) {
+        mList.innerHTML = `<div class="empty-state">🍴<br/>Henüz bu güne öğün eklenmedi.<br/>Yukarıdaki kartlardan veya "Manuel Öğün Ekle" butonundan ekleyebilirsin.</div>`;
+      } else {
+        mList.innerHTML = day.meals.map(m => `
+          <div class="log-row">
+            <div>
+              <div class="meal-name">${m.name}</div>
+              <div class="meal-sub">${m.kcal} kcal • ${m.p}P • ${m.c}K • ${m.f}Y</div>
+            </div>
+            <button class="danger-link" onclick="deleteMeal(${m.id})">Sil</button>
+          </div>
+        `).join('');
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
